@@ -39,37 +39,37 @@ eq2hor = function(
               dec[i] = tmp$dec
           }
       }
-
-      tmp = co_nutate(jd, ra, dec)
-      dra1 = tmp$d_ra
-      ddec1 = tmp$d_dec
-      eps=tmp$eps
-      d_psi=tmp$d_psi
-
-      tmp = co_aberration(jd, ra, dec,eps)
-      dra2 = tmp$d_ra
-      ddec2 = tmp$d_dec
-      eps=tmp$eps
-
-      ra = ra + (dra1*nutate_ + dra2*aberration_)/3600.
-      dec = dec + (ddec1*nutate_ + ddec2*aberration_)/3600.
-
-      lmst = ct2lst(lon, 0, jd)  # get lst (in hours) - note:this is independent of
-                                        #time zone  since giving jd
-      lmst = lmst*h2e # convert lmst to degrees (btw, this is the ra of the zenith)
-      last = lmst + d_psi *cos(eps)/3600. # add correction in degrees
-
-      ha = last - ra
-      w = (ha<0)
-      ha[w] = ha[w] + 360.
-      ha = ha %% 360
-
-      tmp = hadec2altaz(ha, dec, lat, ws=ws)
-      alt = tmp$alt
-      az = tmp$az
-
-      if (refract_ )
-          alt = co_refract(alt, altitude=altitude, ..., to_observed=TRUE)
   }
+  tmp = co_nutate(jd, ra, dec)
+  dra1 = tmp$d_ra
+  ddec1 = tmp$d_dec
+  eps=tmp$eps
+  d_psi=tmp$d_psi
+
+  tmp = co_aberration(jd, ra, dec,eps)
+  dra2 = tmp$d_ra
+  ddec2 = tmp$d_dec
+  eps=tmp$eps
+
+  ra = ra + (dra1*nutate_ + dra2*aberration_)/3600.
+  dec = dec + (ddec1*nutate_ + ddec2*aberration_)/3600.
+
+  lmst = ct2lst(lon, 0, jd)  # get lst (in hours) - note:this is independent of
+                                        #time zone  since giving jd
+  lmst = lmst*h2e # convert lmst to degrees (btw, this is the ra of the zenith)
+  last = lmst + d_psi *cos(eps)/3600. # add correction in degrees
+
+  ha = last - ra
+  w = (ha<0)
+  ha[w] = ha[w] + 360.
+  ha = ha %% 360
+
+  tmp = hadec2altaz(ha, dec, lat, ws=ws)
+  alt = tmp$alt
+  az = tmp$az
+
+  if (refract_ )
+      alt = co_refract(alt, altitude=altitude, ..., to_observed=TRUE)
+
   return(list(alt=alt, az=az, ha=ha))
 }
